@@ -70,3 +70,19 @@ hasNext是状态检测方法，它保证了next的调用成功。
 |IndexOutOfBoundsException|下标参数值越界|
 |ConcurrentModificationException|在禁止并发修改的情况下，检测到对象的并发修改|
 |UnsupportedOperationException|对象不支持用户请求的方法|
+
+# 异常转义
+
+通常在进行高层抽象编码时，调用的底层api会抛出受检查的低层异常，这时候如果直接向高层的客户端抛出低层异常，那么这个异常就会暴露低层的实现。
+
+例如，一个访问存储的api，底层可以是访问mysql或者mongo，那么如果直接抛出mysql定义的异常，那么实现细节就暴露给高层的客户端了。
+
+异常转义，就是通过catch低层的异常，然后抛出高层定义的异常。
+
+```java
+try{
+  //do something
+}catch(MysqlTimeoutException e){
+  throw new AppTimeoutException();
+}
+```
